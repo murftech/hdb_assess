@@ -19,7 +19,7 @@
 !/requirements.txt
 !/setup.sh
 !/*.sh
-!/dev_controltower.py
+# !/dev_controltower.py
 !/.gitignore
 !/README.md
 
