@@ -10,6 +10,9 @@
 # !/datalake/**
 # !/output/**
 !/scripts/**
+/scripts/**/__pycache__/
+/scripts/.DS_Store
+
 # !/venv/**
 
 # Allow these specific top-level files
@@ -19,3 +22,5 @@
 !/startup.sh
 !/dev_controltower.py
 !/.gitignore
+!/README.md
+
