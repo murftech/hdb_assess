@@ -3,7 +3,7 @@ import polars as pl
 
 import sys; sys.path.append('.'); 
 import scripts.hdb_helpers as dc
-
+import os
 
 
 TEST_POISON = 'on'
