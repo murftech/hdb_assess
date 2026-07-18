@@ -19,7 +19,7 @@
 !/requirements.txt
 !/run_pipeline.sh
 # !/setup_datalake.sh
-!/startup.sh
+!/setup.sh
 !/dev_controltower.py
 !/.gitignore
 !/README.md
