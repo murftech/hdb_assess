@@ -13,11 +13,7 @@ from scripts.hdb_helpers import fetch_hdb_data
 import scripts.hdb_helpers as dc
 
 
-# import sys
-# sys.path.append('/Users/murftech/Dropbox/Datarepo/macroecons/modules/hdb_assess')
-
-import sys
-sys.path.append('scripts')
+import sys; sys.path.append('scripts');
 from hdb_helpers import fetch_hdb_data
 
 
