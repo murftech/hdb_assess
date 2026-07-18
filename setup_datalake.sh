@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+source venv/bin/activate
+
 BASE_DIR="$(cd "$(dirname "$0")" && pwd)/datalake"
 
 mkdir -p "$BASE_DIR/raw"

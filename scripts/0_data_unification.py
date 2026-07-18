@@ -22,8 +22,8 @@ from hdb_helpers import fetch_hdb_data
 
 
 # VALIDATE = on/off
-VALIDATE = 'off'
-# VALIDATE = 'on'
+# VALIDATE = 'off'
+VALIDATE = 'on'
 
 # %%
 '''

@@ -10,7 +10,7 @@ transforms, and hashes it into distinct output stages.
 
 ## Requirements
 
-this repo requires - **Python 3.13** and cannot take the latest Python 3.14 (June 10)
+this repo requires - **Python 3.13** and cannot yet take the latest Python 3.14.
 must already be installed on your machine, so that 
 <!-- python3.13 -m venv venv --> can happen 
 
@@ -76,15 +76,15 @@ Do note the numbering dictates the sequence they have to be runned in for fresh 
 Each script is seperate, so the runs and development and debugging can proceed in every new session without codes from other script to be ran before-hand.
 
 
-## Running the notebook pipeline
+## Conversion to ipynb
 
-The notebooks are generated from the `.py` scripts via [jupytext](https://jupytext.readthedocs.io).
+The notebooks are generated from the `.py` scripts via [jupytext]
 If we edit a script py in `scripts/`, regenerate its paired notebook with:
 
 ```bash
 source convert_jupyter.sh
 ```
-Edits in notebook will NOT persist, the resting version should be deterministically generated from .py's forms always.
+Edits in notebook will NOT persist, the resting version should be deterministically generated from .py's content always.
 
 
 

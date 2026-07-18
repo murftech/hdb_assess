@@ -4,7 +4,7 @@ set -e
 # gh repo clone murftech/my-massive-app prod-finance
 
 # run this
-# chmod +x startup.sh
+chmod +x startup.sh
 
 
 # requires 3.13 please install 3.13
