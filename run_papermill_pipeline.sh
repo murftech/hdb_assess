@@ -2,7 +2,7 @@
 set -e
 
 # type in terminal if permission denied
-chmod +x run_pipeline_papermill.sh
+# chmod +x run_papermill_pipeline.sh
 
 source venv/bin/activate
 

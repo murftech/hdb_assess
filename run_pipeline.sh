@@ -2,7 +2,7 @@
 set -e
 
 # type in terminal if permission denied
-chmod +x run_pipeline.sh
+# chmod +x run_pipeline.sh
 
 source venv/bin/activate
 python scripts/0_data_unification.py

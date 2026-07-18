@@ -15,6 +15,13 @@ must already be installed on your machine, so that
 <!-- python3.13 -m venv venv --> can happen 
 
 
+
+## If any sh files gets permission denied. run chmod on it to unlock run permission:
+```bash
+chmod +x nnnn.sh 
+```
+
+
 ## Setup
 
 Clone the repo, then from its root folder run:

@@ -1,10 +1,9 @@
 #!/bin/sh
 set -e
 
-# gh repo clone murftech/my-massive-app prod-finance
 
-# run this
-chmod +x startup.sh
+# type in terminal if permission denied
+# chmod +x startup.sh
 
 
 # requires 3.13 please install 3.13
