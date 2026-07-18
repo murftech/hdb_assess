@@ -195,6 +195,8 @@ profile = ProfileReport(
     hdbdata.to_pandas(),
     title='HDB Resale Master Dataset - Data Profile',
 )
+
+os.makedirs('output', exist_ok=True)
 profile.to_file('output/hdb_ydataprofile_report.html')
 
 # openfile = 'false'

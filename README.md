@@ -13,20 +13,20 @@ transforms, and hashes it into distinct output stages.
 Clone the repo, then from its root folder run:
 
 ```bash
-chmod +x startup.sh
-source ./startup.sh
+chmod +x setup.sh
+source setup.sh
 ```
 
 This creates a virtual environment (`venv/`), activates it, and installs all
 dependencies from `requirements.txt`.
 
-**Note:** use `source ./startup.sh` (not `./startup.sh`) so the virtual environment
+**Note:** use `source startup.sh` (not `./startup.sh`) so the virtual environment
 stays active in your terminal session after the script finishes.
 
 ## Running the pipeline
 
 ```bash
-source ./run_pipeline.sh
+source run_pipeline.sh
 ```
 
 This runs the full pipeline in order:
