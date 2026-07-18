@@ -29,7 +29,7 @@ def fetch_hdb_data(hdb_dataset_id, max_attempts=10, poll_interval=5):
             download_url = resp.json().get("data", {}).get("url", "")
         except AttributeError:
             download_url = ""
-        print(download_url)
+        # print(download_url)
 
         if download_url:
             break
@@ -62,7 +62,7 @@ def fetch_hdb_data(hdb_dataset_id, max_attempts=10, poll_interval=5):
 def sample_hdb(hdb_df, N_ROWS, SAMPLE_SEED):
     import polars as pl
     core_cols = ['month', 'town', 'flat_type', 'block', 'street_name', 'storey_range',
-                'floor_area_sqm', 'flat_model', 'lease_commence_year', 'resale_price']
+                'floor_area_sqm', 'flat_model', 'lease_commence_date', 'resale_price']
     dataload_nonulls = hdb_df.drop_nulls(subset=core_cols)
 
     SAMPLE_SEED = 1   # change to 2, 3, 4, 5 for different samples
@@ -77,15 +77,20 @@ def sample_hdb(hdb_df, N_ROWS, SAMPLE_SEED):
 
     hdbdata = df_sample
 
-
-
-
-
-def showall(dataframe, *modes):
+def showall(dataframe, *modes, tbl_width_chars=250):
     tbl_rows = None if 'closey' in modes else -1
     tbl_cols = None if 'closex' in modes else -1
-    with pl.Config(tbl_rows=tbl_rows, tbl_cols=tbl_cols):
+    with pl.Config(tbl_rows=tbl_rows, tbl_cols=tbl_cols, tbl_width_chars=tbl_width_chars):
         print(dataframe)
+
+
+
+
+# def showall(dataframe, *modes):
+#     tbl_rows = None if 'closey' in modes else -1
+#     tbl_cols = None if 'closex' in modes else -1
+#     with pl.Config(tbl_rows=tbl_rows, tbl_cols=tbl_cols):
+#         print(dataframe)
 
 
 

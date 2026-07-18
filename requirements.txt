@@ -13,8 +13,8 @@ ipython==9.3.0
 setuptools<81
 # note: <81 is required by ydata-profiling.
 
-# ipykernel
+ipykernel
+papermill
 
-# ipykernel==6.29.4
 
 

@@ -1,3 +1,7 @@
+
+
+
+
 # HDB Resale Flat Prices — Data Engineering Pipeline
 
 A pipeline that combines HDB resale flat transaction data (Jan 2012 – Dec 2016) from
@@ -11,6 +15,8 @@ transforms, and hashes it into distinct output stages.
 ## Setup
 
 Clone the repo, then from its root folder run:
+git clone https://github.com/murftech/hdb_assess.git
+
 
 ```bash
 chmod +x setup.sh

@@ -1,3 +1,7 @@
+# %%
+###################################
+# IMPORT
+###################################
 from polars import col, concat, lit, when
 import polars as pl
 
@@ -6,14 +10,17 @@ import scripts.hdb_helpers as dc
 import os
 
 
-TEST_POISON = 'on'
-# TEST_POISON = 'off'
 
-
+# %%
+###################################
+# DATA LOAD
+###################################
 hdbdata = pl.read_parquet('datalake/hdb/raw/hdbdata')
-
+hdbdata.glimpse()
 # Updated snapshot PROFILING done on date: #2026-07-17
 
+
+# %%
 '''
 REQUIREMENT:  Perform Data PROFILING on the dataset. You may code your own PROFILING rules or leverage on
 open-source data quality frameworks.
@@ -24,6 +31,7 @@ We do first these three entry time PROFILING which might be better done self cod
 row counts -> column name and column types -> time variable
 '''
 
+# %%
 ####################################
 # PROFILING: row count
 ####################################
@@ -37,6 +45,7 @@ row_count = (hdbdata
 print(row_count)
 # conclude: nothing alarming
 
+# %%
 ####################################
 # PROFILING: column names and column types
 ####################################
@@ -88,7 +97,7 @@ columnDescribe.show(100)
 # assigned of the correct dtype of string. No concerns.
 
 
-
+# %%
 ####################################
 ### PROFILING: time variable
 ####################################
@@ -100,14 +109,16 @@ monthvalues = (hdbdata
              .len()
 )
 
+# %%
 # Q: What is the format of the time variable
 dc.showall(monthvalues)
 # conclude: it specifies the month of the record.
 # conclude good: the year-month format is in one consistent form - no variances.
-# Downstream validation: Let month be only allowed input format 'YYYY-MM'.
 # conclude good: The format is immediately sortable into earlier and later, unlike formats like January 2013
+# Downstream validation: Let month be only allowed input format 'YYYY-MM'.
 
 
+# %%
 # Q: Is there any anomalous row counts in any month?
 monthvalues['len'].describe()
 # conclude: Average records in a month = 2273
@@ -117,7 +128,7 @@ monthvalues['len'].describe()
 # Hence it is not due to cutoff in early data collection. nothing alarming.
 # Nothing alarming overall.
 
-
+# %%
 # Q: what is the time span of the dataset:
 min_max_month = (hdbdata
                .sort('tabling_version')
@@ -133,7 +144,7 @@ print(min_max_month)
 # conclude: earliest data is 2000-01 latest data is 2016-12.
 # downstream action: will scope it out to only 2012-01 onwards for table 2. In script 2_data_cleaning.
 
-
+# %%
 # Q: Are there any gaps in the monthly time series?
 data_exists_monthdate = (
     hdbdata
@@ -156,10 +167,11 @@ complete_monthdate_list = (
 
 monthdate_indicator = complete_monthdate_list.join(data_exists_monthdate, on='monthdate', how='left')
 
+# %%
 dc.showall(monthdate_indicator)
 # conclude good: By full visual check, confirm every month is in the datas. Also every month format is correct.
 
-
+# %%
 check_12_months_within_year = (
     monthdate_indicator
     .with_columns(year=col('monthdate').dt.year())
@@ -175,7 +187,7 @@ print('row counts -> column name and column types -> time variable')
 print('In these three specifics, no concerns were yet raised, so there is nothing to triage.')
 
 
-
+# %%
 '''
 We now deal with categorical and numerical data profiling
 We will now use an external tool which provides more details for lesser work.
@@ -189,6 +201,7 @@ We will use the ProfileReport function from the ydata-profiling package to easie
 # b) integrating out-of-code processes with pipelines as seamlessly as I can.
 '''
 
+# %%
 from ydata_profiling import ProfileReport
 
 profile = ProfileReport(
@@ -199,16 +212,19 @@ profile = ProfileReport(
 os.makedirs('output', exist_ok=True)
 profile.to_file('output/hdb_ydataprofile_report.html')
 
+# %%
 # openfile = 'false'
 openfile = 'true'
 if openfile == 'true':
     import os
     os.system('open output/hdb_ydataprofile_report.html')
 
+# %%
 '''
 # Becasue the report of this tool is static file based, 
 # we need to take screenshots portions from the report and give the profiling decision in-line 
 # in a file type like microsoft word docx.
+# i have done the exercise in this document: output/hdb_ydataprofile_report_downstream.docx
 # To review the decisions, please open the docx file if you already have an associated app installed - with the command below:
 '''
 
@@ -219,18 +235,20 @@ if openfile == 'true':
     os.system('open output/hdb_ydataprofile_report_downstream.docx')
 
 
+# %%
 ###################################
-# Profiling: Numerical Variable
+# Profiling: Categorical Variable
 ###################################
 
-# categorical variable: 
-# Cardinality: does the number of distinct values make sense, thats really all.
-# Cardinality 2: Does any of them becasme near to a row key?
-# which should be a number or numric time or but is not
-# Long Tail
-# Format Casing Inconsistency
-# Valid Member
+# Categorical variable: 
+# Cardinality Q1: does the number of distinct values make sense. Is the only all-applicable question.
+# Cardinality Q2: Does any of them became near to a row key?
+# String hiding the type? Which should be a number, numeric, time but got saved as a string in source.
+# Long Tails, of potentially inconsequential values.
+# Format/Casing Inconsistency
+# Is it a valid member 
 
+# %%
 '''
 Followup from: output/hdb_ydataprofile_report_downstream.docx
 
@@ -242,6 +260,7 @@ Followup from: output/hdb_ydataprofile_report_downstream.docx
 # which we then ask if they are candidates for merging with other 
 '''
 
+# %%
 # storey_range
 # Downstream profiling: We will investigate in code if all values are of this pattern dd TO dd.
 hdbdata['storey_range'].value_counts().sort('count').show(1000)
@@ -249,7 +268,7 @@ hdbdata['storey_range'].value_counts().sort('count').show(1000)
 # Downstream validation: Let storey_range be only allowed input format as such eg '28 TO 30'.
 
 
-
+# %%
 # flat_model
 # Downstream profiling: We will investigate in code if there are long tail of rare values, 
 # which we then ask if they are candidates for merging with others
@@ -270,7 +289,7 @@ hdbdata['flat_model'].value_counts().sort('count').show(1000)
 # │ Premium Apartment Loft ┆ 5      │ Potentially a rare value
 # │ 2-room                 ┆ 17     │ Potentially a rare value
 # │ Type S2                ┆ 55     │ Potentially a rare value
-# │ Improved-Maisonette    ┆ 56     │ Potentially a rare value
+# │ ImPROVEd-Maisonette    ┆ 56     │ Potentially a rare value
 # │ Premium Maisonette     ┆ 72     │ Potentially a rare value
 # │ Type S1                ┆ 138    │ 
 # │ Multi Generation       ┆ 186    │
@@ -285,27 +304,15 @@ hdbdata['flat_model'].value_counts().sort('count').show(1000)
 # │ Premium Apartment      ┆ 26340  │
 # │ Simplified             ┆ 27334  │
 # │ New Generation         ┆ 87611  │
-# │ Improved               ┆ 123696 │
+# │ ImPROVEd               ┆ 123696 │
 # │ Model A                ┆ 131720 │
 # └────────────────────────┴────────┘
 
 
-
-# categorical variable: 
-# Cardinality: does the number of distinct values make sense, thats really all.
-# Cardinality 2: Does any of them becasme near to a row key?
-# which should be a number or numric time or but is not
-# Long Tail
-# Format Casing Inconsistency
-# Valid Member
-
+# %%
 '''
-Followup from: output/hdb_ydataprofile_report_downstream.docx
-
-# storey_range
-# Downstream profiling: We will investigate in code if all values are of this pattern.
-
-# flat_model
-# Downstream profiling: We will investigate in code if there are long tail of rare values, 
-# which we then ask if they are candidates for merging with other 
+END OF SCRIPT.
+We have gathered all downstream work, tagged and ctrl+f by downstream.
+There is no DATA WRITE in this script. It is also not required in the operationalized pipeline.
+It should however be ran out of AWS, on a regular basis, including writing further profiling codes to check for data drifts, new validations required.
 '''

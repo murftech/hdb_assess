@@ -17,10 +17,14 @@
 
 # Allow these specific top-level files
 !/requirements.txt
-!/run_pipeline.sh
-# !/setup_datalake.sh
 !/setup.sh
+!/run_pipeline.sh
+!/convert_jupyter.sh
+!/run_pipeline_papermill.sh
+# !/setup_datalake.sh
 !/dev_controltower.py
 !/.gitignore
 !/README.md
 
+# ipynb files in root folder for now
+!/*.ipynb

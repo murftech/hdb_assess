@@ -1,32 +1,46 @@
-# SAMPLED = 'on'
-SAMPLED = None
+# %%
+###################################
+# IMPORT
+###################################
+
 
 from polars import col, concat, lit, when
 import polars as pl
 
+import inspect
 import sys; sys.path.append('.'); 
-import scripts.hdb_helpers as dc
 from scripts.hdb_helpers import sample_hdb
-
-# import inspect
-# print(inspect.getsource(sample_hdb))
-
-dataload = pl.read_parquet('datalake/hdb/cleaned/hdbdata')
+import scripts.hdb_helpers as dc
 
 
+# # SAMPLED = 'on'
+SAMPLED = None
 
 
+# %%
+###################################
+# DATA LOAD
+###################################
+hdbdata = pl.read_parquet('datalake/hdb/cleaned/hdbdata')
+hdbdata.glimpse()
+
+# %%
+# User may review the source code for helper function random sampling the hdb dataset
+print(inspect.getsource(sample_hdb))
+
+# %%
 #### SAMPLING FOR FIRST EASE OF Validaton during dev ###
 if SAMPLED == 'on': 
-    hdbdata_v1 = sample_hdb(dataload, N_ROWS=15, SAMPLE_SEED=4)
+    hdbdata_v1 = sample_hdb(hdbdata, N_ROWS=15, SAMPLE_SEED=4)
 else:
-    hdbdata_v1 = dataload
+    hdbdata_v1 = hdbdata
 
 ###################################################
 
 hdbdata_v1.glimpse()
 
 
+# %%
 '''
 REQUIREMENT: Taking the cleaned data from the previous step, create a new column called “Resale
 Identifier”
@@ -48,7 +62,7 @@ last two digits is 01).
 “A”.
 '''
 
-
+# %%
 hdbdata_v2_ided = (
     hdbdata_v1
     .with_columns(
@@ -66,9 +80,9 @@ hdbdata_v2_ided = (
     )
 )
 
+# %%
 # validate
-
-# validate
+# suggestion: run this repeatedly to re-randomized and look at the resale_identifier for satsifactory verification
 validate = (hdbdata_v2_ided
             .select('record_id', 'month', 'town', 'flat_type', 'block', 'resale_price',
                     'avg_price_group', 'block_digits', 'avg_price_digits', 'month_digits', 'town_initial',
@@ -91,14 +105,10 @@ print(random_group)
 validate_group = validate.join(random_group, on=['month', 'town', 'flat_type'], how='inner')
 dc.showall(validate_group)
 
-z_identifier = hdbdata_v2_ided.select('record_id', 'resale_identifier')
 
 
-
-
-# task: below do cleaner
-# v2 v3 whatevr
-
+# %%
+key_identifier = hdbdata_v2_ided.select('record_id', 'resale_identifier')
 
 '''
 REQUIREMENT: If there are any duplicate records, take the higher price and discard the lower price one.
@@ -120,7 +130,8 @@ Resolution: Assumed that this is not a repeat sentence to be applied to composit
 ask is to crete a dataset with 1 resale_identifier as 1 record. 
 '''
 
-
+# %%
+# Do not use price==max(price)
 # hdbdata_id_keyed = (
 #     hdbdata_id
 #     .with_columns(max_price_in_id = col('resale_price').max().over('resale_identifier'))
@@ -138,31 +149,41 @@ ask is to crete a dataset with 1 resale_identifier as 1 record.
 #     .drop('max_price_in_id')
 # )
 
+
+# %%
+# Resolution: Alternate to tie breaker filter row_number == 1, over composite_key
 # sort by resale_price descending, then record_id ascending as a deterministic
 # tiebreak, then keep only the first row encountered per identifier - guarantees
 # exactly one row survives per identifier, even on a genuine price tie.
 
 
-z_identifier_plus_price = z_identifier.join(hdbdata_v1.select('record_id', 'resale_price'), on='record_id', how='left')
-dc.unicity(z_identifier_plus_price, 'resale_identifier')
+key_identifier_plus_price = key_identifier.join(hdbdata_v1.select('record_id', 'resale_price'), on='record_id', how='left')
+dc.unicity(key_identifier_plus_price, 'resale_identifier')
 # failed
 
-z_identifier_dedup = (
-    z_identifier_plus_price
+# %%
+key_identifier_dedup = (
+    key_identifier_plus_price
     .sort(['resale_price', 'record_id'], descending=[True, False])
     .unique(subset='resale_identifier', keep='first', maintain_order=True)
     .drop('resale_price')
 )
-dc.dfratio(z_identifier_plus_price, z_identifier_dedup)
-# 26 percent dropped
 
-dc.unicity(z_identifier_dedup, 'resale_identifier')
+# %%
+# validate
+dc.unicity(key_identifier_dedup, 'resale_identifier')
 # passed
 
-# hdbdata_dedup = hdbdata.join(z_identifier_dedup, on='record_id', how='right')
 
-# filter hdbdata_v1 to only dedup records, attaching the resale_identifier value in z_identifier
-hdbdata_v3_deduped = hdbdata_v1.join(z_identifier_dedup, on='record_id', how='right')
+# %%
+# validate
+dc.dfratio(key_identifier_plus_price, key_identifier_dedup)
+# 26 percent dropped
+
+
+# %%
+# filter hdbdata_v1 to only dedup records, attaching the resale_identifier value in key_identifier
+hdbdata_v3_deduped = hdbdata_v1.join(key_identifier_dedup, on='record_id', how='right')
 
 
 hdbdata_v3_failed_resale_identifier = (
@@ -175,7 +196,10 @@ print(f"discarded to failed (lower-priced identifier duplicates): {hdbdata_v3_fa
 
 
 
-
+# %%
+#################
+### DATA WRITE to Datalake
+#################
 if SAMPLED == 'on':
     print('break')
 else:
