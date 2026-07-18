@@ -2,13 +2,13 @@
 *
 # Allow traversal into these directories
 # !/datalake/
-# !/output/
+!/output/
 !/scripts/
 # !/venv/
 
 # Allow everything inside them
 # !/datalake/**
-# !/output/**
+!/output/**
 !/scripts/**
 /scripts/**/__pycache__/
 /scripts/.DS_Store
@@ -28,3 +28,4 @@
 
 # ipynb files in root folder for now
 !/*.ipynb
+.DS_Store
