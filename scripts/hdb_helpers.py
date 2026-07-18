@@ -4,6 +4,9 @@ import polars as pl
 
 
 def fetch_hdb_data(hdb_dataset_id, max_attempts=10, poll_interval=5):
+    '''
+    To fetch the hdb data based on the official API for it.
+    '''
 
     import time
     import requests
@@ -60,11 +63,16 @@ def fetch_hdb_data(hdb_dataset_id, max_attempts=10, poll_interval=5):
 
 
 def sample_hdb(hdb_df, N_ROWS, SAMPLE_SEED):
+    '''
+    For sampling hdb data to N_ROWS
+
+    '''
+    # take full data why not
     import polars as pl
-    core_cols = ['month', 'town', 'flat_type', 'block', 'street_name', 'storey_range',
-                'floor_area_sqm', 'flat_model', 'lease_commence_date', 'resale_price']
+    core_cols = [c for c in hdb_df.columns if c != 'remaining_lease']
     dataload_nonulls = hdb_df.drop_nulls(subset=core_cols)
 
+    # sampling portion
     SAMPLE_SEED = 1   # change to 2, 3, 4, 5 for different samples
     N_PER_TABLE= round(N_ROWS/3)
 
@@ -76,6 +84,7 @@ def sample_hdb(hdb_df, N_ROWS, SAMPLE_SEED):
     return(df_sample)
 
     hdbdata = df_sample
+
 
 def showall(dataframe, *modes, tbl_width_chars=250):
     tbl_rows = None if 'closey' in modes else -1

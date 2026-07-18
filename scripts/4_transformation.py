@@ -13,7 +13,7 @@ from scripts.hdb_helpers import sample_hdb
 import scripts.hdb_helpers as dc
 
 
-# # SAMPLED = 'on'
+# SAMPLED = 'on'
 SAMPLED = None
 
 
@@ -201,6 +201,7 @@ print(f"discarded to failed (lower-priced identifier duplicates): {hdbdata_v3_fa
 ### DATA WRITE to Datalake
 #################
 if SAMPLED == 'on':
+    print('on sampled data, no WRITE')
     print('break')
 else:
     OUTPUT = hdbdata_v3_failed_resale_identifier
