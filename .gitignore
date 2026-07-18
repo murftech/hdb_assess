@@ -1,0 +1,21 @@
+# Ignore everything by default
+*
+# Allow traversal into these directories
+# !/datalake/
+# !/output/
+!/scripts/
+# !/venv/
+
+# Allow everything inside them
+# !/datalake/**
+# !/output/**
+!/scripts/**
+# !/venv/**
+
+# Allow these specific top-level files
+!/requirements.txt
+!/run_pipeline.sh
+# !/setup_datalake.sh
+!/startup.sh
+!/dev_controltower.py
+!/.gitignore
