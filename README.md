@@ -59,7 +59,7 @@ This is decided as the main way to debug, review and add features.
 ## Running the notebook pipeline
 
 ```bash
-source run_pipeline_papermill.sh
+source run_papermill_pipeline.sh
 ```
 
 This runs the full pipeline in order:

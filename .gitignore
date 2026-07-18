@@ -18,10 +18,7 @@
 # Allow these specific top-level files
 !/requirements.txt
 !/setup.sh
-!/run_pipeline.sh
-!/convert_jupyter.sh
-!/run_pipeline_papermill.sh
-# !/setup_datalake.sh
+!/*.sh
 !/dev_controltower.py
 !/.gitignore
 !/README.md
