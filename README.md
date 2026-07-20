@@ -3,8 +3,10 @@
 this repo requires - **Python 3.13** and cannot yet take the latest Python 3.14.
 
 Python3.13 must already be installed on your machine, so that 
-<!-- python3.13 -m venv venv --> can happen 
-
+```bash
+python3.13 -m venv venv
+```
+can happen 
 
 ## First time setup
 Clone the repo, then from its root folder run:
