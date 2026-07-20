@@ -5,11 +5,13 @@
 !/output/
 !/scripts/
 # !/venv/
+!/architectural design/
 
 # Allow everything inside them
 # !/datalake/**
 !/output/**
 !/scripts/**
+!/architectural design/**
 /scripts/**/__pycache__/
 /scripts/.DS_Store
 
