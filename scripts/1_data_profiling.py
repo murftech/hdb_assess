@@ -310,6 +310,85 @@ hdbdata['flat_model'].value_counts().sort('count').show(1000)
 
 
 # %%
+
+
+###################################
+# Profiling: Categorical Variable
+###################################
+
+# Numeric variable: 
+
+
+
+hdbdata
+
+
+# %%
+###################################
+# Profiling: Numeric Variable - resale_price IQR by year and flat_type
+###################################
+
+'''
+RQUIREMENT: Identify any potentially anomalous resale price based on any heuristics you deem
+appropriate. Please document your heuristic and assumptions in your documentations.
+'''
+
+## There is a most robust quick method to have a first flag. That is the 1.5*IQR fence method.
+## We assume that prices could increase or drop by year. Year to be taken as consideration.
+## We assume that prices of bigger flats are more expensive than smaller flats. flat_type to be taken into consideration.
+## within each cohort of year and flattype, we apply 1.5*IQR to quickly flag out potential anomalous resale prices.
+
+# %%
+hdb_sel = hdbdata.select('month', 'record_id', 'flat_type', 'resale_price')
+
+resale_price_iqr = (
+    hdb_sel
+    .with_columns(year=col('month').str.slice(0, 4))
+    .with_columns(
+        group_samplesize = pl.len().over(['year', 'flat_type']),
+        q1=col('resale_price').quantile(0.25, interpolation='linear').over(['year', 'flat_type']),
+        group_median = pl.median('resale_price').over(['year', 'flat_type']),
+        q3=col('resale_price').quantile(0.75, interpolation='linear').over(['year', 'flat_type']),
+    )
+    .with_columns(iqr=col('q3') - col('q1'))
+    .with_columns(
+        upp_1_5_iqr=col('q1') - 1.5 * col('iqr'),
+        low_1_5_iqr=col('q3') + 1.5 * col('iqr'),
+    )
+    .with_columns(
+        is_outlier=(col('resale_price') < col('upp_1_5_iqr')) | (col('resale_price') > col('low_1_5_iqr'))
+    )
+)
+
+dc.sortcount(resale_price_iqr, 'is_outlier')
+# validate
+dc.showall(resale_price_iqr.filter(col('is_outlier')==True), 'closey')
+
+# %%
+# Q: How many records fall outside their cohort's 1.5*IQR fence, overall and by group, if we use simple IQR fence?
+outlier_summary = (
+    resale_price_iqr
+    .group_by('year', maintain_order=True)
+    .agg(
+        n=pl.len(),
+        n_outlier=col('is_outlier').sum(),
+    )
+    .with_columns(pcnt_outlier=(col('n_outlier') / col('n')))
+    .sort(['year'])
+)
+
+dc.showall(outlier_summary)
+
+
+print(f"total records flagged as outlier: {resale_price_iqr['is_outlier'].sum():,} "
+      f"out of {resale_price_iqr.height:,} ({resale_price_iqr['is_outlier'].mean():.2%})")
+
+# conclude:
+# downstream action: decide stakeholders how could we further the rules to decide on flagging outlier or even dropping data.
+# in script 2_data_validation
+# no action taken as of now
+
+# %%
 '''
 END OF SCRIPT.
 We have gathered all downstream work, tagged and ctrl+f by downstream.
