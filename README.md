@@ -11,7 +11,7 @@ python3.13 -m venv venv
 ```bash
 git checkout runned
 ```
-checkout to branch runned to switch to folder with fully populated jupyter notebooks and datalake and preinstalled venv.
+checkout to branch runned to switch to folder with fully populated jupyter notebooks and datalake.
 
 ## initial setup helper
 Clone the repo, then from its root folder run:
