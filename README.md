@@ -8,7 +8,10 @@ python3.13 -m venv venv
 ```
 
 ## for ease grading outputs
-git branch runned to switch to folder with fully populated jupyter notebooks and datalake and preinstalled venv.
+```bash
+git checkout runned
+```
+checkout to branch runned to switch to folder with fully populated jupyter notebooks and datalake and preinstalled venv.
 
 ## initial setup helper
 Clone the repo, then from its root folder run:
