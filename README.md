@@ -7,8 +7,17 @@ Python3.13 must already be installed on your machine, so that below command can 
 python3.13 -m venv venv
 ```
 
+## Architectural Design
+Find in this folder 2 png charts for the design 
 
-## Fresh setup
+
+![Data Ingestion Architecture](architectural%20design/1-Data%20Ingestion.drawio.png)
+*1 - Data Ingestion: data.gov.sg → ECS/Fargate → S3*
+
+![Data Exploitation Architecture](architectural%20design/2-Data%20Exploitation.drawio.png)
+*2 - Data Exploitation: Tableau → Athena → S3*
+
+## initial setup helper
 Clone the repo, then from its root folder run:
 
 ```bash
