@@ -8,7 +8,7 @@ python3.13 -m venv venv
 ```
 can happen 
 
-## First time setup
+## Fresh setup
 Clone the repo, then from its root folder run:
 
 ```bash
@@ -19,7 +19,7 @@ source setup.sh
 This creates a virtual environment (`venv/`), activates it, and installs all
 dependencies from `requirements.txt`.
 
-## If any sh files gets permission denied. run chmod on it to unlock run permission:
+## If any sh files gets permission denied, run [chmod] on it to unlock run permission:
 ```bash
 chmod +x nnnn.sh 
 ```
@@ -39,7 +39,7 @@ This runs the full pipeline in order:
 5. `4_transformation.py` — builds the Resale Identifier, dedups, hashes it
 6. `5_hash.py` — finalizes the irreversible hash output
 
-You may also open each file by typing ipython in terminal, to load the python REPL.
+-You may also open each file by typing ipython in terminal, to load the python REPL.
 This is decided as the main way to debug, review and add features.
 
 
@@ -61,16 +61,18 @@ This runs the full pipeline in order:
 5. `4_transformation.ipynb` — builds the Resale Identifier, dedups, hashes it
 6. `5_hash.ipynb` — finalizes the irreversible hash output
 
-You may also open each file in a Jupyter-compatible editor (e.g. VS Code, JupyterLab, or Jupyter Notebook) to run interactively for reviewing, validation, and debugging.
-Do note the numbering dictates the sequence they have to be runned in for fresh data coming in.
-Each script is seperate, so the runs and development and debugging can proceed in every new session without codes from other script to be ran before-hand.
+-You may also open each file in a Jupyter-compatible editor (e.g. VS Code, JupyterLab, or Jupyter Notebook) to run interactively for reviewing, validation, and debugging.
+
+-Do note the numbering dictates the sequence they have to be runned in for fresh data coming in.
+
+-Each script is seperate, so the runs and development and debugging can proceed in every new session without codes from other script to be ran before-hand.
 
 
 
 ## Conversions from py to ipynb
 
 The notebooks are generated from the `.py` scripts via [jupytext]
-If we edit a script py in `scripts/`, regenerate its paired notebook with:
+If we edit a script py in `scripts/`, regenerate each paired notebook with:
 
 ```bash
 source convert_jupyter.sh
