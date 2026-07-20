@@ -1,0 +1,30 @@
+# Ignore everything by default
+*
+# Allow traversal into these directories
+# !/datalake/
+!/output/
+!/scripts/
+# !/venv/
+!/architectural design/
+
+# Allow everything inside them
+# !/datalake/**
+!/output/**
+!/scripts/**
+!/architectural design/**
+/scripts/**/__pycache__/
+/scripts/.DS_Store
+
+# !/venv/**
+
+# Allow these specific top-level files
+!/requirements.txt
+!/setup.sh
+!/*.sh
+# !/dev_controltower.py
+!/.gitignore
+!/README.md
+
+# ipynb files in root folder for now
+!/*.ipynb
+.DS_Store
